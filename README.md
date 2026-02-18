@@ -46,7 +46,7 @@ conda activate abc3d
 
 --
 
-# Reproducibility Statement
+## Reproducibility Statement
 
 ABC3D analyses are deterministic.
 
