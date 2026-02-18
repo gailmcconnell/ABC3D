@@ -43,3 +43,18 @@ Or using conda:
 
 conda env create -f environment.yml
 conda activate abc3d
+
+--
+
+# Reproducibility Statement
+
+ABC3D analyses are deterministic.
+
+- Fixed random seed for Otsu subsampling
+- No stochastic feature extraction steps
+- Version logging included
+- Example dataset provided
+- Example output included
+
+Results from the manuscript can be reproduced using the provided scripts.
+
