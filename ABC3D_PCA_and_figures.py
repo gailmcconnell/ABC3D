@@ -5,17 +5,6 @@ Created on Thu Feb 12 10:09:28 2026
 @author: Gail McConnell
 """
 
-# ABC3D downstream PCA, factorial analysis, and figure generation
-# Creates:
-#   Figure 4: PCA scatter (PC1 vs PC2)
-#   Figure 5: Interaction plots for PC1 and PC2 (mean ± SEM)
-#   Figure 6: PC1/PC2 loading barplots
-#   Figure 7: Heatmap of mean z-scored features by Strain×Medium
-#   Supplement: per-feature two-way ANOVA + BH-FDR tables
-#
-# INPUT: ABC3D feature table containing explicit Strain and Medium metadata
-# OUTPUT: PCA/ANOVA CSV tables and publication figures in OUT_DIR
-
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -33,15 +22,10 @@ from patsy.builtins import Q
 # =========================
 # USER SETTINGS
 # =========================
-# Relative paths make the released script portable.
-# INPUT_FILE may be either .csv or .xlsx.
 INPUT_FILE = Path("./results/ABC3D_features.csv")
 OUT_DIR = Path("./results/PCA_and_figures")
 DPI = 600
 
-# Explicit feature set used for the revised manuscript analysis.
-# GLCM energy is intentionally excluded because it is mathematically
-# dependent on angular second moment (energy = sqrt(ASM)).
 PCA_FEATURES = [
     "shannon_entropy",
     "renyi_entropy_a2",
@@ -243,7 +227,7 @@ print("\nANOVA PC1:\n", a1)
 print("\nANOVA PC2:\n", a2)
 
 # =========================
-# Matplotlib style (journal-friendly)
+# Matplotlib style
 # =========================
 plt.rcParams.update({
     "font.size": 10,
@@ -259,13 +243,6 @@ plt.rcParams.update({
 # =========================
 # FIGURE 4: PCA scatter
 # =========================
-# Match manuscript styling:
-#   BW25113 = orange circles
-#   ΔamiA   = blue squares
-#   ΔompR   = green triangles
-#   ΔydgD   = purple diamonds
-#   LB      = filled symbols + translucent filled ellipse
-#   M9      = open symbols + dashed ellipse
 
 strain_order = ["BW25113", "amiA", "ompR", "ydgD"]
 
@@ -391,7 +368,6 @@ for strain in strain_order:
                 zorder=3,
             )
 
-# Explicit legend so colour, marker and fill state match the manuscript.
 legend_handles = []
 for strain in strain_order:
     colour = colour_map[strain]
