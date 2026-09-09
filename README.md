@@ -21,7 +21,7 @@ ABC3D computes:
   - Dissimilarity
   - Energy
   - Homogeneity
-- 3D discrete wavelet transform (db2) energy features:
+- 3D discrete relative wavelet transform (db2) energy features:
   - LLL, LLH, LHL, LHH
   - HLL, HLH, HHL, HHH
 - Biomass occupancy metrics
@@ -34,8 +34,8 @@ ABC3D computes:
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/ABC3D-biofilm-analysis.git
-cd ABC3D-biofilm-analysis
+git clone https://github.com/gailmcconnell/ABC3D.git
+cd ABC3D
 Install dependencies:
 
 pip install -r requirements.txt
@@ -58,3 +58,33 @@ ABC3D analyses are deterministic.
 
 Results from the manuscript can be reproduced using the provided scripts.
 
+## Metadata
+
+ABC3D uses an explicit metadata file rather than inferring experimental labels from image filenames.
+
+The required columns are:
+
+- `filename`
+- `strain`
+- `medium`
+- `relative_path`
+
+Each row corresponds to one 3D TIFF image stack.
+
+For example:
+
+```text
+filename,strain,medium,relative_path
+BW25113_5um_stack1.tif,BW25113,LB,LB/BW25113/BW25113_5um_stack1.tif
+
+```markdown
+## Running ABC3D
+
+Place the image data and `metadata.csv` inside the data directory.
+
+Run:
+
+```bash
+python ABC3D.py
+
+Results are written to results/ABC3D_features.csv
