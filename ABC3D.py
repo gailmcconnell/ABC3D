@@ -4,7 +4,6 @@ Created on Wed Sept 9 09:29:00 2026
 
 @author: Gail McConnell, SIPBS, University of Strathclyde
 ABC3D - Analysis of Biofilm Complexity in 3D
-Metadata-driven batch analysis with relative wavelet energy
 """
 
 from pathlib import Path
