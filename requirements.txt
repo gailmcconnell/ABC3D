@@ -1,0 +1,6 @@
+numpy
+pandas
+tifffile
+scikit-image
+scipy
+PyWavelets
