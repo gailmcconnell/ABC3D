@@ -39,8 +39,9 @@ ABC3D/
 ├── README.md
 └── data/
     ├── metadata.csv
-    ├── example_01.tif
-    └── example_02.tif
+    ├── Example 1.tif
+    └── Example 2.tif
+    └── Example 3.tif
 ```
 
 `ABC3D.py` performs feature extraction from 3D image stacks.
@@ -81,8 +82,8 @@ Each row represents one 3D TIFF image stack. For example:
 
 ```text
 filename,strain,medium,relative_path
-example_01.tif,BW25113,LB,example_01.tif
-example_02.tif,ompR,M9,example_02.tif
+Example 1.tif,BW25113,LB,Example 1.tif
+Example 2.tif,ompR,M9,Example 2.tif
 ```
 
 `relative_path` specifies the location of each image relative to the data directory.
