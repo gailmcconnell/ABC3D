@@ -151,6 +151,10 @@ Experimental labels are supplied explicitly through `metadata.csv`. The feature-
 
 The included demonstration dataset provides a self-contained example of the required input structure and can be used to verify installation and execution of the feature-extraction pipeline.
 
+## Licence
+
+The source code is currently made publicly available for peer review and reproducibility purposes. A formal open-source licence will be added following publication.
+
 ## Citation
 
 If you use ABC3D in published work, please cite the accompanying publication:
