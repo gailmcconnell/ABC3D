@@ -1,33 +1,55 @@
 # ABC3D
-Analysis of Biofilm Complexity in 3D - a Python framework for extraction of fractal, textural, and statistical descriptors of multidimensional image datasets
 
+**Analysis of Biofilm Complexity in 3D**
 
-It extracts fractal, textural, statistical, and wavelet-based descriptors from volumetric OME-TIFF image stacks and exports analysis-ready feature matrices for downstream multivariate analysis.
+ABC3D is an open-source Python framework for quantitative analysis of three-dimensional biofilm morphology from volumetric microscopy images. It extracts fractal, textural, statistical and wavelet-based descriptors from 3D TIFF image stacks and exports an analysis-ready feature matrix for downstream multivariate analysis.
 
----
+The repository also contains the scripts used for principal component analysis (PCA), statistical analysis and permutation-based multivariate analysis in the accompanying manuscript.
 
 ## Features
 
-ABC3D computes:
+ABC3D calculates:
 
-- 3D box-counting fractal dimension (RDBC)
-- Lacunarity across dyadic spatial scales
+- 3D box-counting fractal dimension
+- Lacunarity across spatial scales
 - Shannon entropy
 - Rényi entropy (α = 2)
 - 2.5D grey-level co-occurrence matrix (GLCM) features:
-  - Angular second moment
-  - Contrast
-  - Correlation
-  - Dissimilarity
-  - Energy
-  - Homogeneity
-- 3D discrete relative wavelet transform (db2) energy features:
+  - angular second moment
+  - contrast
+  - correlation
+  - dissimilarity
+  - energy
+  - homogeneity
+- Single-level 3D discrete wavelet transform (db2) relative sub-band energies:
   - LLL, LLH, LHL, LHH
   - HLL, HLH, HHL, HHH
-- Biomass occupancy metrics
-- PCA-ready CSV export
+- Intensity, foreground occupancy and spatial-frequency descriptors
 
----
+Wavelet sub-band energies are expressed relative to total wavelet energy. The eight relative energies therefore sum to 1 for non-degenerate inputs.
+
+## Repository contents
+
+```text
+ABC3D/
+├── ABC3D.py
+├── ABC3D PCA and figures.py
+├── ABC3D permutation analysis.py
+├── requirements.txt
+├── README.md
+└── data/
+    ├── metadata.csv
+    ├── example_01.tif
+    └── example_02.tif
+```
+
+`ABC3D.py` performs feature extraction from 3D image stacks.
+
+`ABC3D PCA and figures.py` performs the PCA and associated statistical analyses and generates the corresponding plots.
+
+`ABC3D permutation analysis.py` performs permutation-based multivariate analysis of the extracted feature matrix.
+
+The `data` directory contains a small demonstration dataset so that the analysis pipeline can be tested without access to the complete experimental image dataset.
 
 ## Installation
 
@@ -36,55 +58,101 @@ Clone the repository:
 ```bash
 git clone https://github.com/gailmcconnell/ABC3D.git
 cd ABC3D
-Install dependencies:
+```
 
+Install the required Python packages:
+
+```bash
 pip install -r requirements.txt
-Or using conda:
-
-conda env create -f environment.yml
-conda activate abc3d
-
---
-
-Reproducibility statement
-
-ABC3D analyses are deterministic.
-
-- Fixed random seed for Otsu subsampling
-- No stochastic feature extraction steps
-- Version logging included
-- Example dataset provided
-- Example output included
-
-Results from the manuscript can be reproduced using the provided scripts.
+```
 
 ## Metadata
 
-ABC3D uses an explicit metadata file rather than inferring experimental labels from image filenames.
+ABC3D uses an explicit metadata table rather than inferring experimental labels from image filenames.
 
-The required columns are:
+The required columns in `metadata.csv` are:
 
 - `filename`
 - `strain`
 - `medium`
 - `relative_path`
 
-Each row corresponds to one 3D TIFF image stack.
-
-For example:
+Each row represents one 3D TIFF image stack. For example:
 
 ```text
 filename,strain,medium,relative_path
-BW25113_5um_stack1.tif,BW25113,LB,LB/BW25113/BW25113_5um_stack1.tif
+example_01.tif,BW25113,LB,example_01.tif
+example_02.tif,ompR,M9,example_02.tif
+```
 
-```markdown
-## Running ABC3D
+`relative_path` specifies the location of each image relative to the data directory.
 
-Place the image data and `metadata.csv` inside the data directory.
+The software validates the metadata before analysis, including checking for missing labels, duplicate paths, filename/path inconsistencies, unsupported file extensions and missing image files. Strain and medium are taken explicitly from the metadata table and are not inferred from filenames.
 
-Run:
+## Running the demonstration
+
+The repository includes demonstration TIFF stacks and matching metadata in the `data` directory.
+
+From the repository directory, run:
 
 ```bash
 python ABC3D.py
+```
 
-Results are written to results/ABC3D_features.csv
+The demonstration data will be analysed and the output written to:
+
+```text
+results/ABC3D_features.csv
+```
+
+The output contains one row per image together with its supplied metadata and calculated image features.
+
+## Analysing your own data
+
+Place your 3D TIFF stacks in a directory and create a corresponding `metadata.csv` containing the required columns described above.
+
+By default, `ABC3D.py` uses:
+
+```python
+DATA_DIR = Path("./data")
+METADATA_FILE = DATA_DIR / "metadata.csv"
+OUT_DIR = Path("./results")
+```
+
+These paths can be changed in the user settings section at the beginning of the script if required.
+
+## Downstream analysis
+
+The PCA and permutation scripts operate on the feature table generated by ABC3D:
+
+```text
+results/ABC3D_features.csv
+```
+
+The PCA analysis uses 17 non-redundant features. GLCM energy is excluded from the PCA because it is mathematically dependent on angular second moment (energy = √ASM).
+
+Run the PCA and figure-generation analysis with:
+
+```bash
+python "ABC3D PCA and figures.py"
+```
+
+Run the permutation-based multivariate analysis with:
+
+```bash
+python "ABC3D permutation analysis.py"
+```
+
+The permutation analysis uses a fixed random seed to provide reproducible permutation results.
+
+## Reproducibility
+
+Experimental labels are supplied explicitly through `metadata.csv`. The feature-extraction pipeline does not assign experimental groups from filenames and does not apply a default strain or medium to unrecognised files.
+
+The included demonstration dataset provides a self-contained example of the required input structure and can be used to verify installation and execution of the feature-extraction pipeline.
+
+## Citation
+
+If you use ABC3D in published work, please cite the accompanying publication:
+
+McConnell G. Analysis of Biofilm Complexity in 3D (ABC3D): An open-source framework for quantitative fractal, textural, and statistical analysis of colony biofilm morphology in three dimensions, Biorxiv, 2026. https://doi.org/10.64898/2026.02.27.708470
