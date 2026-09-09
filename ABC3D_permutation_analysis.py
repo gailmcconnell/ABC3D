@@ -42,17 +42,22 @@ EXPECTED_MEDIA = ["LB", "M9"]
 
 
 def load_input_table(path):
+    """Load the ABC3D feature table from CSV."""
     path = Path(path)
+
     if not path.exists():
         raise FileNotFoundError(
             f"Input feature table not found: {path}\n"
             "Set INPUT_FILE to the ABC3D feature table to analyse."
         )
-    if path.suffix.lower() == ".csv":
-        return pd.read_csv(path)
-    if path.suffix.lower() in {".xlsx", ".xls"}:
-        return pd.read_excel(path)
-    raise ValueError("INPUT_FILE must be a CSV or Excel file.")
+
+    if path.suffix.lower() != ".csv":
+        raise ValueError(
+            f"Unsupported input format '{path.suffix}'. "
+            "ABC3D analysis requires a CSV file."
+        )
+
+    return pd.read_csv(path)
 
 
 def prepare_input_table(df):
