@@ -4,3 +4,7 @@ tifffile
 scikit-image
 scipy
 PyWavelets
+matplotlib
+scikit-learn
+statsmodels
+patsy
