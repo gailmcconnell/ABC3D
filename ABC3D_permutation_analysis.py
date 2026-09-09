@@ -1,25 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 ABC3D permutation-based multivariate analysis
-==============================================
-
-Tests whether Medium, Strain, and Medium × Strain explain multivariate
-variation in the same standardised 17-feature matrix used for the manuscript
-PCA.
-
-Experimental labels are read explicitly from the ABC3D feature table and are
-never inferred from filenames. For each term, a Freedman-Lane residual
-permutation test is performed in a multivariate regression framework using
-Euclidean geometry.
-
-Outputs
--------
-PERMANOVA_results.csv
-PERMANOVA_null_distributions.csv
-PERMANOVA_standardised_input.csv
-Permutation_Medium.png
-Permutation_Strain.png
-Permutation_Interaction.png
 """
 
 from pathlib import Path
