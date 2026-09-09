@@ -81,23 +81,20 @@ def bh_fdr(pvals: np.ndarray) -> np.ndarray:
     return out
 
 def load_input_table(path: Path) -> pd.DataFrame:
-    """Load a CSV or Excel feature table."""
     path = Path(path)
+
     if not path.exists():
         raise FileNotFoundError(
             f"Input feature table not found: {path}\n"
             "Set INPUT_FILE to the feature table to analyse."
         )
 
-    suffix = path.suffix.lower()
-    if suffix == ".csv":
-        return pd.read_csv(path)
-    if suffix in {".xlsx", ".xls"}:
-        return pd.read_excel(path)
+    if path.suffix.lower() != ".csv":
+        raise ValueError(
+            f"Unsupported input format '{path.suffix}'. ABC3D analysis requires a CSV file."
+        )
 
-    raise ValueError(
-        f"Unsupported input format '{path.suffix}'. Use .csv, .xlsx, or .xls."
-    )
+    return pd.read_csv(path)
 
 
 def prepare_input_table(df: pd.DataFrame) -> pd.DataFrame:
