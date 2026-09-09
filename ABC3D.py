@@ -28,12 +28,9 @@ RUN_MODE = "file"     # "file" | "synthetic" | "both"
 
 # Root folder containing metadata.csv and the LB/M9 subfolders.
 # For the public repository, use a relative path such as Path("./data").
-DATA_DIR = Path(
-    r"C:\Users\acp98112\OneDrive - University of Strathclyde\Documents\Research\ABC3D\Revised wavelet energy"
-)
-
+DATA_DIR = Path("./data")
 METADATA_FILE = DATA_DIR / "metadata.csv"
-OUT_DIR = DATA_DIR / "ABC3Dv1.3_results"
+OUT_DIR = Path("./results")
 
 INVERT = False
 THRESHOLD = None
