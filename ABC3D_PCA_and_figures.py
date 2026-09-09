@@ -20,7 +20,7 @@ import statsmodels.formula.api as smf
 from patsy.builtins import Q
 
 # =========================
-# USER SETTINGS
+# CONFIGURATION
 # =========================
 INPUT_FILE = Path("./results/ABC3D_features.csv")
 OUT_DIR = Path("./results/PCA_and_figures")
@@ -157,7 +157,7 @@ def prepare_input_table(df: pd.DataFrame) -> pd.DataFrame:
 ensure_outdir(OUT_DIR)
 df = prepare_input_table(load_input_table(INPUT_FILE))
 
-# Use the exact manuscript feature set rather than every numeric output column.
+# Use the predefined analysis feature set rather than all numeric output columns.
 missing_features = [c for c in PCA_FEATURES if c not in df.columns]
 if missing_features:
     raise ValueError(
@@ -180,10 +180,10 @@ if missing_feature_rows.any():
 df_clean = df.copy()
 
 # Save the exact validated input used for analysis.
-df_clean.to_csv(OUT_DIR / "input_cleaned.csv", index=False)
+df_clean.to_csv(OUT_DIR / "validated_input.csv", index=False)
 
 # =========================
-# PCA (full features, standardized)
+# PCA of the standardized feature set
 # =========================
 X = df_clean[feature_cols].to_numpy(dtype=float)
 Xz = StandardScaler().fit_transform(X)
@@ -478,8 +478,8 @@ plt.savefig(OUT_DIR / "Figure5_StrainxMedium.pdf")
 plt.savefig(OUT_DIR / "Figure5_StrainxMedium.png", dpi=DPI)
 plt.close()
 
-def pretty_feature_name(name: str) -> str:
-    """Convert internal feature names to publication-friendly labels."""
+def format_feature_label(name: str) -> str:
+    """Convert internal feature names to concise display labels."""
     labels = {
         "shannon_entropy": "Shannon",
         "renyi_entropy_a2": "Renyi",
@@ -505,7 +505,7 @@ def pretty_feature_name(name: str) -> str:
 # =========================
 # FIGURE 6: Principal-component loadings
 # =========================
-# Show all 17 manuscript features, ordered by loading, with publication labels.
+# Display all 17 analysis features ordered by loading.
 
 fig, axes = plt.subplots(1, 2, figsize=(10.5, 5.2))
 
@@ -514,7 +514,7 @@ for ax, pc, panel in [
     (axes[1], "PC2", "B"),
 ]:
     vals = loadings[pc].sort_values()
-    labels = [pretty_feature_name(v) for v in vals.index]
+    labels = [format_feature_label(v) for v in vals.index]
     y = np.arange(len(vals))
 
     ax.barh(y, vals.values)
@@ -548,7 +548,7 @@ group_means = (
     .mean()
 )
 
-# Match manuscript row order.
+# Apply the predefined experimental-group order.
 desired_index = [
     ("BW25113", "LB"),
     ("BW25113", "M9"),
@@ -562,14 +562,14 @@ desired_index = [
 existing_index = [idx for idx in desired_index if idx in group_means.index]
 group_means = group_means.loc[existing_index]
 
-# Order features by absolute PC1 loading, as used in the manuscript figure.
+# Order features by absolute PC1 loading.
 ordered_cols = loadings["PC1"].abs().sort_values(ascending=False).index.tolist()
 group_means = group_means[ordered_cols]
 
-# Publication-friendly feature labels.
-pretty_cols = [pretty_feature_name(c) for c in group_means.columns]
+# Format feature labels for display.
+feature_labels = [format_feature_label(c) for c in group_means.columns]
 
-# Publication-friendly group labels.
+# Format experimental-group labels for display.
 row_display = {
     "BW25113": "BW25113",
     "amiA": r"$\Delta amiA$",
@@ -594,17 +594,17 @@ cbar.set_label("Mean z-score")
 ax.set_yticks(range(len(yticklabels)))
 ax.set_yticklabels(yticklabels)
 
-ax.set_xticks(range(len(pretty_cols)))
-ax.set_xticklabels(pretty_cols, rotation=90)
+ax.set_xticks(range(len(feature_labels)))
+ax.set_xticklabels(feature_labels, rotation=90)
 
 plt.tight_layout()
 plt.savefig(OUT_DIR / "Figure7_Heatmap.pdf")
 plt.savefig(OUT_DIR / "Figure7_Heatmap.png", dpi=DPI)
 plt.close()
 
-# Save the displayed heatmap matrix using publication-friendly column labels.
+# Save the displayed heatmap matrix using the formatted feature labels.
 heatmap_export = group_means.copy()
-heatmap_export.columns = pretty_cols
+heatmap_export.columns = feature_labels
 heatmap_export.index = yticklabels
 heatmap_export.to_csv(OUT_DIR / "Figure7_heatmap_matrix_groupmeans_z.csv")
 
@@ -643,7 +643,7 @@ anova_feat["q_interaction"] = bh_fdr(anova_feat["p_interaction"].to_numpy())
 
 anova_feat.to_csv(OUT_DIR / "Supp_feature_ANOVA_FDR.csv", index=False)
 
-# Convenience “top hits” tables
+# Additional tables ranked by adjusted p-value
 anova_feat.sort_values("q_medium").head(30).to_csv(OUT_DIR / "Supp_top30_medium_effect.csv", index=False)
 anova_feat.sort_values("q_interaction").head(30).to_csv(OUT_DIR / "Supp_top30_interaction_effect.csv", index=False)
 
