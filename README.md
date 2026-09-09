@@ -33,8 +33,8 @@ Wavelet sub-band energies are expressed relative to total wavelet energy. The ei
 ```text
 ABC3D/
 ├── ABC3D.py
-├── ABC3D PCA and figures.py
-├── ABC3D permutation analysis.py
+├── ABC3D_PCA_and_figures.py
+├── ABC3D_permutation_analysis.py
 ├── requirements.txt
 ├── README.md
 └── data/
